@@ -1,0 +1,12 @@
+.job-card {
+    width: calc(33.33% - 20px); /* Adjust as needed */
+    margin: 10px;
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  @media (max-width: 768px) {
+    .job-card {
+      width: 100%; /* Display one card per row on smaller screens */
+    }
+  }
