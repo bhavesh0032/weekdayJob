@@ -14,7 +14,8 @@ export const setJobs = (jobs, totalCount) => ({
         body: JSON.stringify({ limit, offset }),
       });
       const data = await response.json();
-      dispatch(setJobs(data.jobs, data.totalCount));
+
+      dispatch(setJobs(data.jdList, data.totalCount));
     } catch (error) {
       console.error(error);
     }
