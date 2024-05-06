@@ -1,0 +1,67 @@
+.job-card {
+    width: calc(28% - 20px); /* Adjust as needed */
+    margin: 17px;
+    display: inline-block;
+    vertical-align: top;
+    text-align: left;
+    box-shadow: 0 1px 2px rgba(0, 0, 0.7, 0.1);
+    padding: 6px;
+    margin-top: 20px;
+    border: 1px solid lightgray;
+    border-radius: 16px;
+    position: relative;
+  }
+  
+  .circular-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    filter: blur(1px);
+  }
+  
+  .company_logo_details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 90px;
+  }
+  
+  .company_logo {
+    width: 50px;
+  }
+  
+  .min_exp {
+    margin-bottom: 2px;
+    font-weight: 550;
+    color: gray;
+  }
+  
+  .job-image {
+    width: 45px;
+  }
+  .posted-ago{
+    box-Shadow: 0 1px 2px rgba(0,0,0.7,0.1);
+    padding: 6px;
+    margin-top: 20px;
+    margin-left: 15px;
+    display: inline-block;
+    border: 1px solid lightgray;
+    border-radius: 16px;
+  }
+  @media (max-width: 1037px) {
+    .job-card {
+      width: calc(45% - 20px);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .job-card {
+      width: calc(95% - 20px); /* Display one card per row on smaller screens */
+    }
+  }
+  
+  
