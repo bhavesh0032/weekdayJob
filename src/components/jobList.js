@@ -1,4 +1,4 @@
-import React ,{ useEffect, useState } from "react";
+import React ,{ useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchJobs } from "../store/action/jobActions";
 import { JobCard } from "./jobcard";
@@ -7,25 +7,48 @@ export const JobList = () =>{
     
     const dispatch = useDispatch();
   const { jobs, totalCount} = useSelector((state) => state.jobs);
+//   const [jobCards, setJobCards] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([])
-  const [offset, setOffset] = useState(0);
+  const [visibleJobs, setVisibleJobs] = useState([]);
+//   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [filterApplied, setFilterApplied] = useState(false);
+  const containerRef = useRef(null);
+
+  
+
   useEffect(() => {
-    dispatch(fetchJobs(30, offset));
-  }, [dispatch, offset]);
+    dispatch(fetchJobs(totalCount, 0));
+  }, [dispatch, totalCount]);
+
+//   useEffect(() => {
+//     setJobCards((prevJobCards) => [...prevJobCards, ...jobs]);
+//   }, [jobs]);
+
+useEffect(() => {
+    setVisibleJobs(jobs.slice(0, 30)); // Initially, render the first 30 jobs
+  }, [jobs]);
  
   const handleScroll = () => {
     
-    if (loading || jobs.length === totalCount) return;
+    if (loading || jobs.length <= setVisibleJobs.length) return;
 
-    const scrolledToBottom =
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
+    const container = containerRef.current;
+    if (!container) return;
+    
 
-    if (scrolledToBottom) {
+    const { bottom } = container.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+
+    if (bottom <= windowHeight + 100) {
       setLoading(true);
-      setOffset((prevOffset) => prevOffset + 30);
-    }
+      setTimeout(() => {
+        const endIndex = Math.min(visibleJobs.length + 12, jobs.length);
+        setVisibleJobs((prevJobs) => [...prevJobs, ...jobs.slice(prevJobs.length, endIndex)]);
+        setLoading(false);
+      }, 500); // Simulate loading delay
   };
+}
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -34,34 +57,55 @@ export const JobList = () =>{
     };
   }, [handleScroll]);
 
-  useEffect(() => {
-    if (loading) {
-      dispatch(fetchJobs(30, offset));
-      setLoading(false);
-    }
-  }, [dispatch, loading, offset]);
+//   useEffect(() => {
+//     if (loading) {
+//         dispatch(fetchJobs(12, offset)).finally(() => {
+//             setLoading(false);
+//           });
+//       }
+//   }, [dispatch, loading, offset]);
   
 
 
   const handleFilterChange = (selectedFilters) => {
-    const { role, employees, experience, remote, salary, companyName } = selectedFilters;
+    const { role, numberOfEmployees, experience, remote, minimumBasePay, companyName } = selectedFilters;
 
-    const filteredJobs = jobs.filter((job) => {
-      // Implement filtering logic here based on selectedFilters
-      // For example, filter by role:
-      return job.role === selectedFilters.role;
-    });
-    setFilteredJobs(filteredJobs);
+    
+  
+    let filteredJobs = [...jobs];
+
+    if (role) {
+      filteredJobs = filteredJobs.filter((job) => job.jobRole === role);
+    }
+    if (numberOfEmployees) {
+      filteredJobs = filteredJobs.filter((job) => job.numberOfEmployees === numberOfEmployees);
+    }
+    if (experience) {
+      filteredJobs = filteredJobs.filter((job) => job.minExp - job.maxExp === experience);
+    }
+    if (remote) {
+      filteredJobs = filteredJobs.filter((job) => job.remote === remote);
+    }
+    if (minimumBasePay) {
+      filteredJobs = filteredJobs.filter((job) => job.minJdSalary - job.maxJdSalary === minimumBasePay);
+    }
+    if (companyName) {
+      filteredJobs = filteredJobs.filter((job) => job.companyName.toLowerCase().includes(companyName.toLowerCase()));
+    }
+  
+    setFilteredJobs(filteredJobs); // Reset to display the first 30 filtered jobs
+    setFilterApplied(true);
   };
+  const renderJobs = filterApplied ? filteredJobs : jobs;
   return (
     <div>
-         <FilterOptions onChange={(filters) => handleFilterChange(filters)} />
+         <FilterOptions jdList={jobs} onChange={handleFilterChange} />
          {filteredJobs.map((job) => (
-        <JobCard key={job.jobs} job={job} />
+        <JobCard key={job.jdUid} job={job}  />
       ))}
-         <div className="job-card-container">
-      { jobs.map((job) => (
-        <JobCard key={job.jdUid} job={job} />
+         <div className="job-card-container" ref={containerRef} style={{  overflowY: "auto" }} >
+      { visibleJobs.map((job) => (
+        <JobCard key={job.jdUid} job={job}  />
       ))}
       {loading && <div>Loading...</div>}
       </div>

@@ -1,6 +1,6 @@
 import React,{ useState } from "react";
 
-export const FilterOptions = ({ onChange}) => {
+export const FilterOptions = ({ jdList ,onChange}) => {
     const [selectedFilters, setSelectedFilters] = useState({
         role: "",
         numberOfEmployees: "",
@@ -17,28 +17,62 @@ export const FilterOptions = ({ onChange}) => {
         e.preventDefault();
         onChange(selectedFilters);
       };
-return(
+     // Extract unique values for each filter option
+  const uniqueRoles = Array.from(new Set(jdList.map((job) => job.jobRole)));
+  const uniqueExperience = Array.from(new Set(jdList.map((job) => job.minExp - job.maxExp)));
+  const uniqueRemoteOptions = Array.from(new Set(jdList.map((job) => job.remote)));
+  const uniqueMinimumBasePay = Array.from(new Set(jdList.map((job) => job.minJdSalary - job.maxJdSalary)));
+
+  return (
     <div className="filter-options">
-    <form onSubmit={handleSubmit}>
-        <select name="role" value={selectedFilters.role} onChange={handleInputChange}>
+      <form onSubmit={handleSubmit}>
+        <select
+          name="role"
+          value={selectedFilters.role}
+          onChange={handleInputChange}
+        >
           <option value="">Select Role</option>
-          {/* Add options for roles */}
+          {uniqueRoles.map((role) => (
+            <option key={role} value={role}>
+              {role}
+            </option>
+          ))}
         </select>
-        <select name="numberOfEmployees" value={selectedFilters.numberOfEmployees} onChange={handleInputChange}>
-          <option value="">Select Number of Employees</option>
-          {/* Add options for number of employees */}
-        </select>
-        <select name="experience" value={selectedFilters.experience} onChange={handleInputChange}>
+        <select
+          name="experience"
+          value={selectedFilters.experience}
+          onChange={handleInputChange}
+        >
           <option value="">Select Experience</option>
-          {/* Add options for experience */}
+          {uniqueExperience.map((experience) => (
+            <option key={experience} value={experience}>
+              {experience} years
+            </option>
+          ))}
         </select>
-        <select name="remote" value={selectedFilters.remote} onChange={handleInputChange}>
+        <select
+          name="remote"
+          value={selectedFilters.remote}
+          onChange={handleInputChange}
+        >
           <option value="">Select Remote</option>
-          {/* Add options for remote */}
+          {uniqueRemoteOptions.map((remote) => (
+            <option key={remote} value={remote}>
+              {remote}
+            </option>
+          ))}
         </select>
-        <select name="minimumBasePay" value={selectedFilters.minimumBasePay} onChange={handleInputChange}>
+        <select
+          name="minimumBasePay"
+          value={selectedFilters.minimumBasePay}
+          onChange={handleInputChange}
+        >
           <option value="">Select Minimum Base Pay</option>
-          {/* Add options for minimum base pay */}
+          {uniqueMinimumBasePay.map((minimumBasePay) => (
+            <option key={minimumBasePay} value={minimumBasePay}>
+              {minimumBasePay}
+            </option>
+          ))}
         </select>
         <input
           type="text"
@@ -49,7 +83,6 @@ return(
         />
         <button type="submit">Apply Filters</button>
       </form>
-
-  </div>
-)
+    </div>
+  );
 }
