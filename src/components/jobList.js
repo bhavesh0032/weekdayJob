@@ -8,6 +8,7 @@ export const JobList = () =>{
     const dispatch = useDispatch();
   const { jobs, totalCount} = useSelector((state) => state.jobs);
 //   const [jobCards, setJobCards] = useState([]);
+
   const [filteredJobs, setFilteredJobs] = useState([])
   const [visibleJobs, setVisibleJobs] = useState([]);
 //   const [offset, setOffset] = useState(0);
@@ -21,17 +22,67 @@ export const JobList = () =>{
     dispatch(fetchJobs(totalCount, 0));
   }, [dispatch, totalCount]);
 
+  const handleFilterChange = (selectedFilters) => {
+    console.log("🚀 ~ handleFilterChange ~ selectedFilters:", selectedFilters)
+    const { role, numberOfEmployees, experience, remote, minimumBasePay, companyName } = selectedFilters;
+
+    
+  
+    let allfilteredJobs = [];
+  
+
+  
+    if (role) {
+      allfilteredJobs = jobs.filter((job) => job.jobRole === role);
+      setFilterApplied(true);
+    }
+    if (numberOfEmployees) {
+      allfilteredJobs = jobs.filter((job) => job.numberOfEmployees === numberOfEmployees);
+      setFilterApplied(true);
+    }
+    if (experience) {
+      allfilteredJobs = jobs.filter((job) =>  `${job.minExp} years`  === experience);
+      setFilterApplied(true);
+    }
+    if (remote) {
+      allfilteredJobs = jobs.filter((job) => job.remote === remote);
+      setFilterApplied(true);
+    }
+    if (minimumBasePay) {
+      allfilteredJobs = jobs.filter((job) => `${job.minJdSalary}`  === minimumBasePay);
+      setFilterApplied(true);
+    }
+    if (companyName) {
+     allfilteredJobs = jobs.filter((job) => job.companyName.toLowerCase().includes(companyName.toLowerCase()));
+     setFilterApplied(true);
+    }
+    
+   
+  const filtersEmpty = Object.values(selectedFilters).every((value) => !value);
+  if (filtersEmpty) {
+    
+    setFilterApplied(false);
+  } else {
+    // setFilteredJobsCount(12); // Reset to display the first 12 filtered jobs
+    setFilteredJobs(allfilteredJobs);
+    setFilterApplied(true);
+  }
+
+
+  };
+    console.log("🚀 ~ handleFilterChange ~ filteredJobs:", filteredJobs)
+
 //   useEffect(() => {
 //     setJobCards((prevJobCards) => [...prevJobCards, ...jobs]);
 //   }, [jobs]);
 
 useEffect(() => {
-    setVisibleJobs(jobs.slice(0, 30)); // Initially, render the first 30 jobs
+    setVisibleJobs(jobs.slice(0, 12)); // Initially, render the first 30 jobs
   }, [jobs]);
  
   const handleScroll = () => {
     
-    if (loading || jobs.length <= setVisibleJobs.length) return;
+    if (loading ||  (filterApplied ? filteredJobs.length : jobs.length) <= (filterApplied ? filteredJobs.length : setVisibleJobs.length)) return;
 
     const container = containerRef.current;
     if (!container) return;
@@ -44,9 +95,10 @@ useEffect(() => {
       setLoading(true);
       setTimeout(() => {
         const endIndex = Math.min(visibleJobs.length + 12, jobs.length);
+        const filterIndex = Math.min(filteredJobs.length + 12, jobs.length);
         setVisibleJobs((prevJobs) => [...prevJobs, ...jobs.slice(prevJobs.length, endIndex)]);
-        setFilteredJobs((prevJobs) => [...prevJobs, ...jobs.slice(prevJobs.length, endIndex)]);
-        setLoading(false);
+        setFilteredJobs((prevJobs) => [...prevJobs, ...jobs.slice(prevJobs.length, filterIndex)])
+          setLoading(false);
       }, 500); // Simulate loading delay
   };
 }
@@ -68,48 +120,19 @@ useEffect(() => {
   
 
 
-  const handleFilterChange = (selectedFilters) => {
-    const { role, numberOfEmployees, experience, remote, minimumBasePay, companyName } = selectedFilters;
-
-    
-  
-    let filteredJobs = [...jobs];
-
-    if (role) {
-      filteredJobs = filteredJobs.filter((job) => job.jobRole === role);
-    }
-    if (numberOfEmployees) {
-      filteredJobs = filteredJobs.filter((job) => job.numberOfEmployees === numberOfEmployees);
-    }
-    if (experience) {
-      filteredJobs = filteredJobs.filter((job) => job.minExp - job.maxExp === experience);
-    }
-    if (remote) {
-      filteredJobs = filteredJobs.filter((job) => job.remote === remote);
-    }
-    if (minimumBasePay) {
-      filteredJobs = filteredJobs.filter((job) => job.minJdSalary - job.maxJdSalary === minimumBasePay);
-    }
-    if (companyName) {
-      filteredJobs = filteredJobs.filter((job) => job.companyName.toLowerCase().includes(companyName.toLowerCase()));
-    }
-  
-    setFilteredJobs(filteredJobs.slice(0, 30)); // Reset to display the first 30 filtered jobs
-    setFilterApplied(true);
-  };
-  const renderJobs = filterApplied ? filteredJobs : jobs;
+ 
+    // console.log("🚀 ~ handleFilterChange ~ filteredJobs:", filteredJobs
+  const renderJobs = filterApplied ? filteredJobs : visibleJobs;
   return (
     <div>
-         <FilterOptions jdList={jobs} onChange={handleFilterChange} />
-         {filteredJobs.map((job) => (
-        <JobCard key={job.jdUid} job={job}  />
+        <div className="job-card-container" ref={containerRef} style={{  overflowY: "auto" }}>
+      <FilterOptions jdList={jobs} onChange={handleFilterChange} />
+      {renderJobs.map((job) => (
+        <JobCard key={job.jdUid} job={job} />
       ))}
-         <div className="job-card-container" ref={containerRef} style={{  overflowY: "auto" }} >
-      { visibleJobs.map((job) => (
-        <JobCard key={job.jdUid} job={job}  />
-      ))}
-      {loading && <div>Loading...</div>}
       </div>
+      {loading && <div>Loading...</div>}
     </div>
   );
 }
+{/* <div className="job-card-container" ref={containerRef} style={{  overflowY: "auto" }} ></div> */}

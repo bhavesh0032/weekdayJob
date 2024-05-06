@@ -2,12 +2,12 @@ import React,{ useState } from "react";
 
 export const FilterOptions = ({ jdList ,onChange}) => {
     const [selectedFilters, setSelectedFilters] = useState({
-        role: "",
-        numberOfEmployees: "",
-        experience: "",
-        remote: "",
-        minimumBasePay: "",
-        companyName: "",
+        role: '',
+        numberOfEmployees: '',
+        experience: '',
+        remote: '',
+        minimumBasePay: '',
+        companyName: '',
       });
       const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -19,9 +19,9 @@ export const FilterOptions = ({ jdList ,onChange}) => {
       };
      // Extract unique values for each filter option
   const uniqueRoles = Array.from(new Set(jdList.map((job) => job.jobRole)));
-  const uniqueExperience = Array.from(new Set(jdList.map((job) => job.minExp - job.maxExp)));
+  const uniqueExperience = Array.from(new Set(jdList.map((job) => `${job.minExp} years`)));
   const uniqueRemoteOptions = Array.from(new Set(jdList.map((job) => job.remote)));
-  const uniqueMinimumBasePay = Array.from(new Set(jdList.map((job) => job.minJdSalary - job.maxJdSalary)));
+  const uniqueMinimumBasePay = Array.from(new Set(jdList.map((job) => `${job.minJdSalary}`)));
 
   return (
     <div className="filter-options">
@@ -46,7 +46,7 @@ export const FilterOptions = ({ jdList ,onChange}) => {
           <option value="">Select Experience</option>
           {uniqueExperience.map((experience) => (
             <option key={experience} value={experience}>
-              {experience} years
+              {experience} 
             </option>
           ))}
         </select>

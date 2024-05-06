@@ -123,7 +123,7 @@ export const JobCard = ({ job }) => {
             alignItems: "center",
           }}
         >
-          Estimated Salary: {job.salaryCurrencyCode} {job.maxJdSalary ? `${job.minJdSalary} - ${job.maxJdSalary}` : "5 - 10 LPA"}
+          Estimated Salary: {job.salaryCurrencyCode} {job.maxJdSalary ? `${job.minJdSalary}` : "5 - 10 LPA"}
           {/* <CheckBoxIcon style={{ color: "#5dc632", marginLeft: "5px" }} /> */}
         </Typography>
         <Typography>
@@ -160,7 +160,7 @@ export const JobCard = ({ job }) => {
           }}
         >
           <p className="min_exp">Minimum Experience </p>
-          {`${job.minExp} - ${job.maxExp} years`}
+          {`${job.minExp}  years`}
         </Typography>
         <Button
           href="https://weekday.works"
