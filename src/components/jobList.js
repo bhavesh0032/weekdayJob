@@ -45,6 +45,7 @@ useEffect(() => {
       setTimeout(() => {
         const endIndex = Math.min(visibleJobs.length + 12, jobs.length);
         setVisibleJobs((prevJobs) => [...prevJobs, ...jobs.slice(prevJobs.length, endIndex)]);
+        setFilteredJobs((prevJobs) => [...prevJobs, ...jobs.slice(prevJobs.length, endIndex)]);
         setLoading(false);
       }, 500); // Simulate loading delay
   };
@@ -93,7 +94,7 @@ useEffect(() => {
       filteredJobs = filteredJobs.filter((job) => job.companyName.toLowerCase().includes(companyName.toLowerCase()));
     }
   
-    setFilteredJobs(filteredJobs); // Reset to display the first 30 filtered jobs
+    setFilteredJobs(filteredJobs.slice(0, 30)); // Reset to display the first 30 filtered jobs
     setFilterApplied(true);
   };
   const renderJobs = filterApplied ? filteredJobs : jobs;
