@@ -91,7 +91,7 @@ export const JobCard = ({ job }) => {
             alignItems: "center",
           }}
         >
-          Estimated Salary: {job.salaryCurrencyCode} {job.maxJdSalary ? `${job.minJdSalary}` : "5 - 10 LPA"}
+          Estimated Salary: {job.salaryCurrencyCode} {job.minJdSalary ? `${job.minJdSalary}` : "5 - 10 LPA" || ''}
           {/* <CheckBoxIcon style={{ color: "#5dc632", marginLeft: "5px" }} /> */}
         </Typography>
         <Typography>

@@ -19,7 +19,7 @@ export const FilterOptions = ({ jdList ,onChange}) => {
       };
      // Extract unique values for each filter option
   const uniqueRoles = Array.from(new Set(jdList.map((job) => job.jobRole || '')));
-  const uniqueExperience = Array.from(new Set(jdList.map((job) => `${job.minExp || ''} years` )));
+  const uniqueExperience = Array.from(new Set(jdList.map((job) => `${job.minExp  || ''} ` )));
   const uniqueRemoteOptions = Array.from(new Set(jdList.map((job) => job.remote || '')));
   const uniqueMinimumBasePay = Array.from(new Set(jdList.map((job) => `${job.minJdSalary || ''}` )));
 
