@@ -34,34 +34,18 @@ export const JobCard = ({ job }) => {
   };
 
   const truncatedJobDetails = job.jobDetailsFromCompany
-    .split(" ")
-    .slice(0, 90)
-    .join(" ");
-  const showMoreButton = job.jobDetailsFromCompany.split(" ").length > 50;
+  ? job.jobDetailsFromCompany.split(" ").slice(0, 90).join(" ")
+  : '';
+  const showMoreButton = job.jobDetailsFromCompany && job.jobDetailsFromCompany.split(" ").length > 50;
 
   return (
     <Card
       className="job-card"
-    //   sx={{
-        // boxShadow: "0 1px 2px rgba(0,0,0.7,0.1)",
-        // padding: "6px",
-        // marginTop: "20px",
-        // border: "1px solid lightgray",
-        // borderRadius: "16px",
-        // position: "relative", // Add this line
-    //   }}
+    
     >
       <Box
       className="posted-ago"
-        // sx={{
-        //   boxShadow: "0 1px 2px rgba(0,0,0.7,0.1)",
-        //   padding: "6px",
-        //   marginTop: "20px",
-        //   marginLeft: "15px",
-        //   display: "inline-block",
-        //   border: "1px solid lightgray",
-        //   borderRadius: "16px",
-        // }}
+       
       >
         <Typography
           color="textSecondary"
@@ -94,7 +78,7 @@ export const JobCard = ({ job }) => {
                 marginBottom: "2px",
               }}
             >
-              {job.companyName}
+              {job.companyName || ''}
             </Typography>
             <Typography
               sx={{
@@ -102,14 +86,14 @@ export const JobCard = ({ job }) => {
                 marginBottom: "3px",
               }}
             >
-              {job.jobRole}
+              {job.jobRole || ''}
             </Typography>
             <Typography
               sx={{
                 fontSize: "14px",
               }}
             >
-              {job.location}
+              {job.location || ''}
             </Typography>
           </div>
         </div>
@@ -154,6 +138,7 @@ export const JobCard = ({ job }) => {
             </Button>
           )}
         </Typography>
+        {job.minExp && (
         <Typography
           sx={{
             marginTop: "23px",
@@ -162,6 +147,7 @@ export const JobCard = ({ job }) => {
           <p className="min_exp">Minimum Experience </p>
           {`${job.minExp}  years`}
         </Typography>
+        )}
         <Button
           href="https://weekday.works"
           className="Apply_btn"
